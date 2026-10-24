@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     fullname VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) DEFAULT NULL,
     role VARCHAR(30) NOT NULL DEFAULT 'Người chia sẻ'
 );
 
@@ -29,9 +30,23 @@ CREATE TABLE IF NOT EXISTS recipes (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE IF NOT EXISTS comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT NOT NULL,
+    author_name VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX comments_recipe_time (recipe_id, created_at, id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+);
+
 INSERT INTO users (username, fullname) VALUES
 ('daubep', 'Đầu bếp Bếp Nhà'),
 ('thanhvien', 'Thành viên chia sẻ');
+
+-- Mật khẩu lab LongPhan được lưu bằng password_hash của PHP.
+INSERT INTO users (username, fullname, role, password_hash) VALUES
+('admin', 'Quản trị Bếp Nhà', 'admin', '$2y$10$9H9.e2dLUOotg/uU4Inv6eY762gl75u4g6Du3Fu18EEPnkxL23RRW');
 
 INSERT INTO categories (name, description) VALUES
 ('Bữa sáng', 'Món ăn đơn giản cho buổi sáng'),
