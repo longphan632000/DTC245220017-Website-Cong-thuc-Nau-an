@@ -83,3 +83,37 @@ ERROR 1142 (42000) at line 1: CREATE command denied to user 'recipe_user'@'local
 
 report_user: DELETE FROM recipe_db.recipes WHERE id=-1;
 ERROR 1142 (42000) at line 1: DELETE command denied to user 'report_user'@'localhost' for table 'recipes'
+
+KIỂM TRA SAU KHI CHUYỂN CỔNG VỀ MẪU
+2026-10-24T19:42:17.012820+07:00
+Chỉ 12 container d29 chạy. 27 container khác đã dừng/tắt tự khởi động lại; giữ nguyên dữ liệu.
+d29-cadvisor: 8081
+d29-grafana: 3000
+d29-loki: 3100
+d29-mysql: nội bộ, không publish cổng
+d29-mysql-exporter: 9104
+d29-nginx: 80, 443
+d29-nginx-exporter: 9113
+d29-node-exporter: 9100
+d29-phpmyadmin: 8082
+d29-prometheus: 9090
+d29-promtail: nội bộ, không publish cổng
+d29-recipe-app: nội bộ, không publish cổng
+Cổng cũ 3029: đã đóng
+Cổng cũ 3129: đã đóng
+Cổng cũ 8189: đã đóng
+Cổng cũ 8080: đã đóng
+Cổng cũ 3306: đã đóng
+Cổng cũ 5432: đã đóng
+Dashboard giữ nguyên: Đề 29 - Giám sát hệ thống
+Dashboard giữ nguyên: Đề 29 - Log tập trung
+Datasource prometheus: OK
+Datasource loki: OK
+Grafana cổng 3000: admin / LongPhan đăng nhập thành công.
+Website HTTPS: 200, xác thực bằng chứng chỉ lab.
+phpMyAdmin cổng 8082: HTTP 200.
+Prometheus sau đổi cổng: cadvisor=UP, mysql=UP, nginx=UP, node-exporter=UP, prometheus=UP
+mysql_up=1
+nginx_up=1
+Loki cổng 3100, log 5 phút gần nhất {container="d29-nginx"}: 1 dòng (limit 3)
+Loki cổng 3100, log 5 phút gần nhất {container="d29-recipe-app"}: 1 dòng (limit 3)

@@ -40,7 +40,7 @@ docker compose up -d --build
 docker compose ps
 ```
 
-Prometheus: http://localhost:9090/targets. Grafana: http://localhost:3029, đăng nhập `admin` / `LongPhan`. Vào Connections → Data sources → Add data source → Prometheus, URL `http://prometheus:9090`, Save & test.
+Prometheus: http://localhost:9090/targets. Grafana: http://localhost:3000, đăng nhập `admin` / `LongPhan`. Vào Connections → Data sources → Add data source → Prometheus, URL `http://prometheus:9090`, Save & test.
 
 Tạo dashboard bằng Dashboards → New → Add visualization, chọn datasource Prometheus và nhập từng query:
 
@@ -141,7 +141,7 @@ d29/
 Các thay đổi vận hành cần thiết:
 
 - Thêm tiền tố `d29-` cho container_name để tránh tên trùng trên máy. Service name vẫn là các tên dùng trong URL nội bộ.
-- Chỉ đổi ba cổng đang bị chiếm: Grafana `3000 → 3029`, Loki `3100 → 3129`, cAdvisor `8081 → 8189`. phpMyAdmin vẫn `8082`, Prometheus vẫn `9090`, Nginx vẫn `80/443` như mẫu.
+- Cổng host dùng đúng mẫu: Grafana `3000`, Loki `3100`, cAdvisor `8081`, phpMyAdmin `8082`, Prometheus `9090`, Nginx `80/443`. Các container thuộc dự án khác trên máy đã được dừng và tắt tự khởi động lại để dành cổng cho d29; dữ liệu của chúng vẫn được giữ nguyên.
 - Cấp mật khẩu Grafana qua biến môi trường để dùng `LongPhan`. Các mật khẩu còn lại cũng dùng `LongPhan` theo yêu cầu. Không tính mật khẩu này là biện pháp mật khẩu mạnh.
 - Sửa phần phân quyền: image MySQL tự cấp ALL cho MYSQL_USER. Chỉ thêm GRANT như mẫu sẽ không thu hồi ALL, nên dùng `REVOKE ALL PRIVILEGES, GRANT OPTION FROM ...` trước rồi cấp lại SELECT/INSERT/UPDATE/DELETE. Dùng REVOKE toàn bộ trên riêng tài khoản app để xử lý cả quyền database đã được image escape dấu gạch dưới.
 - Tạo chứng chỉ mới, thêm subjectAltName cho localhost; không dùng private key đã xuất hiện trong repository mẫu. Sửa dòng `.gitignore` bị nối key và đường dẫn exporter trong mẫu thành các dòng đúng.
@@ -153,10 +153,10 @@ Các thay đổi vận hành cần thiết:
 | --- | --- | --- |
 | Website | https://localhost | Biểu mẫu demo chia sẻ công thức như mẫu |
 | phpMyAdmin | http://localhost:8082 | root / LongPhan để quản trị; recipe_user / LongPhan để thao tác dữ liệu; report_user / LongPhan để chỉ đọc |
-| Grafana | http://localhost:3029 | admin / LongPhan |
+| Grafana | http://localhost:3000 | admin / LongPhan |
 | Prometheus | http://localhost:9090/targets | Không có tài khoản trong cấu hình lab mẫu |
-| cAdvisor | http://localhost:8189 | Không có tài khoản trong cấu hình lab mẫu |
-| Loki readiness | http://localhost:3129/ready | API; xem log trong Grafana |
+| cAdvisor | http://localhost:8081 | Không có tài khoản trong cấu hình lab mẫu |
+| Loki readiness | http://localhost:3100/ready | API; xem log trong Grafana |
 
 Ứng dụng và MySQL không publish cổng ra host. Trình duyệt truy cập website qua Nginx. Các cổng trên giữ cách publish của mẫu, dùng trong mạng lab.
 
@@ -215,7 +215,7 @@ docker compose up -d
 
 ## Git/GitHub - chương 4
 
-Repository public trên tài khoản `longphan632000`, nhánh `main`, gồm ba commit: ứng dụng/DB/Nginx; giám sát; log/hardening/minh chứng. Các commit dùng Git identity của bạn. Thông tin cá nhân còn lại sẽ do bạn bổ sung.
+Repository public trên tài khoản `longphan632000`, nhánh `main`, có ba mốc triển khai: ứng dụng/DB/Nginx; giám sát; log/hardening/minh chứng. Các thay đổi sau đó được ghi bằng commit bổ sung. Các commit dùng Git identity của bạn. Thông tin cá nhân còn lại sẽ do bạn bổ sung.
 
 ```bash
 git status
