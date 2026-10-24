@@ -155,6 +155,34 @@ services:
     depends_on:
       - nginx
 
+  # ================= 3. LOGGING STACK (COMMIT 3) =================
+  loki:
+    image: grafana/loki:2.9.8
+    container_name: d29-loki
+    restart: unless-stopped
+    ports:
+      - "3129:3100"
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/loki-config.yaml
+    networks:
+      - monitoring-net
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    container_name: d29-promtail
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - monitoring-net
+    depends_on:
+      - loki
+
 networks:
   frontend-net:
     driver: bridge
@@ -167,3 +195,4 @@ volumes:
   mysql_data:
   prometheus_data:
   grafana_data:
+  loki_data:

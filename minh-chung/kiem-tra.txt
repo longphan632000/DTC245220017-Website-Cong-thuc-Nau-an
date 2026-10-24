@@ -1,0 +1,85 @@
+KẾT QUẢ KIỂM TRA - BẢN DỰNG THEO REPOSITORY MẪU
+2026-10-24T19:24:01.067031+07:00
+
+HTTPS xác thực bằng nginx/certs/nginx.crt: OK. Tạo/sửa/xóa bằng tài khoản recipe_user đã giới hạn; tìm nguyên liệu; lọc danh mục: OK. Bài kiểm tra đã xóa.
+CSRF sai: 403, dữ liệu được giữ nguyên.
+Chi tiết món không tồn tại: HTTP 404, dùng làm log demo.
+
+$ docker compose config --quiet
+(hợp lệ, không có thông báo)
+
+$ docker compose exec -T recipe-app php -l /var/www/html/index.php
+No syntax errors detected in /var/www/html/index.php
+
+$ docker compose exec -T recipe-app id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+$ docker compose exec -T nginx nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+$ docker compose exec -T prometheus promtool check config /etc/prometheus/prometheus.yml
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+$ curl --cacert nginx/certs/nginx.crt -s -I https://localhost
+HTTP/1.1 200 OK
+Server: nginx
+Date: Sat, 24 Oct 2026 12:24:03 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+X-Powered-By: PHP/8.3.33
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+
+$ curl -s -I http://localhost
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Sat, 24 Oct 2026 12:24:04 GMT
+Content-Type: text/html
+Content-Length: 162
+Connection: keep-alive
+Location: https://localhost/
+
+Prometheus targets: cadvisor=UP, mysql=UP, nginx=UP, node-exporter=UP, prometheus=UP
+PromQL mysql_up => 1
+PromQL nginx_up => 1
+PromQL count(container_memory_usage_bytes{container_label_com_docker_compose_project="d29"}) => 12
+PromQL count(rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_project="d29"}[5m])) => 12
+LogQL {container="d29-recipe-app"} => 5 dòng (limit 5)
+LogQL {container="d29-recipe-app"} |~ "GET|POST" => 5 dòng (limit 5)
+LogQL {container="d29-mysql"} => 5 dòng (limit 5)
+LogQL {container="d29-nginx"} |= "404" => 2 dòng (limit 5)
+
+DB được tạo lại từ volume trống bằng mysql/init.sql: hoàn tất, không có ERROR; 6 công thức mẫu.
+SHOW GRANTS: recipe_user chỉ SELECT/INSERT/UPDATE/DELETE trên recipe_db; report_user chỉ SELECT; exporter_user đọc metrics.
+Ảnh website được kiểm tra qua HTTP nội bộ của container vì browser automation không chấp nhận cert tự ký. HTTPS qua Nginx được kiểm tra bằng curl/urllib và CA xác thực đúng chứng chỉ lab; không bỏ qua kiểm tra TLS.
+
+app/Dockerfile: Git blob SHA giống nguyên file mẫu: 1ebb0d8b5dbc0b137bb30fcf2588ded4b2b43ecd
+prometheus/prometheus.yml: Git blob SHA giống nguyên file mẫu: 915042344833c98688354cea01628c8561f737a3
+loki/loki-config.yml: Git blob SHA giống nguyên file mẫu: 43b3d067e6539d5ccf3251e905644ad92fc42fb1
+
+SQL kiểm tra quyền và dữ liệu:
+Grants for recipe_user@%
+GRANT USAGE ON *.* TO `recipe_user`@`%`
+GRANT SELECT, INSERT, UPDATE, DELETE ON `recipe_db`.* TO `recipe_user`@`%`
+Grants for report_user@%
+GRANT USAGE ON *.* TO `report_user`@`%`
+GRANT SELECT ON `recipe_db`.* TO `report_user`@`%`
+Grants for exporter_user@%
+GRANT SELECT, PROCESS, REPLICATION CLIENT ON *.* TO `exporter_user`@`%`
+recipes
+6
+categories
+6
+
+recipe_user: CREATE TABLE recipe_db.blocked_check(id INT);
+ERROR 1142 (42000) at line 1: CREATE command denied to user 'recipe_user'@'localhost' for table 'blocked_check'
+
+report_user: DELETE FROM recipe_db.recipes WHERE id=-1;
+ERROR 1142 (42000) at line 1: DELETE command denied to user 'report_user'@'localhost' for table 'recipes'

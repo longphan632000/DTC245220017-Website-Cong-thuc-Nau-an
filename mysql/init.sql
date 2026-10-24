@@ -50,7 +50,7 @@ INSERT INTO recipes (title, ingredients, instructions, category_id, user_id, coo
 ('Trà chanh bạc hà', '2 túi trà\n400 ml nước nóng\n1 quả chanh\n2 thìa mật ong\n5 lá bạc hà', '1. Ủ trà theo hướng dẫn rồi để nguội bớt.\n2. Khuấy mật ong vào trà ấm.\n3. Thêm nước chanh khi trà nguội.\n4. Rót vào ly với đá và bạc hà.', 6, 2, 15, 2);
 
 -- Chương 6: thu hồi quyền ALL do image MySQL cấp tự động, rồi cấp lại 4 quyền dữ liệu.
-REVOKE ALL PRIVILEGES ON recipe_db.* FROM 'recipe_user'@'%';
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'recipe_user'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON recipe_db.* TO 'recipe_user'@'%';
 
 CREATE USER IF NOT EXISTS 'report_user'@'%' IDENTIFIED BY 'LongPhan';
