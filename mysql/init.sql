@@ -56,3 +56,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON recipe_db.* TO 'recipe_user'@'%';
 CREATE USER IF NOT EXISTS 'report_user'@'%' IDENTIFIED BY 'LongPhan';
 GRANT SELECT ON recipe_db.* TO 'report_user'@'%';
 FLUSH PRIVILEGES;
+
+-- Tài khoản MySQL exporter theo mẫu, chỉ dùng để đọc metrics.
+CREATE USER IF NOT EXISTS 'exporter_user'@'%' IDENTIFIED BY 'LongPhan' WITH MAX_USER_CONNECTIONS 3;
+GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter_user'@'%';
+FLUSH PRIVILEGES;
