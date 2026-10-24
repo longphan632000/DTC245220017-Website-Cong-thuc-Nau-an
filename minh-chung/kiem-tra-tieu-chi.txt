@@ -1,0 +1,141 @@
+KIỂM TRA HOÀN THIỆN TIÊU CHÍ ĐỀ 29
+Ngày kiểm tra: 25/10/2026, múi giờ Asia/Ho_Chi_Minh
+Phạm vi: phần triển khai; sinh viên tự làm báo cáo in và giữ tài khoản GitHub hiện tại.
+
+Grafana: mật khẩu mới đăng nhập được; LongPhan bị từ chối.
+root: mật khẩu mới đúng, mật khẩu cũ không còn dùng được.
+recipe_user: mật khẩu mới đúng, mật khẩu cũ không còn dùng được.
+report_user: mật khẩu mới đúng, mật khẩu cũ không còn dùng được.
+exporter_user: mật khẩu mới đúng, mật khẩu cũ không còn dùng được.
+6 mật khẩu khác nhau, dài 39 ký tự, có chữ hoa/thường, số, ký tự đặc biệt.
+MySQL exporter dùng mật khẩu từ environment: mysql_up=1.
+Các mật khẩu mới không được in vào kết quả kiểm tra.
+
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+CapBnd:	0000000000000000
+NoNewPrivs:	1
+
+PASS: Trang công khai HTTPS 200; không có form tạo/sửa/xóa/danh mục
+PASS: Cookie phiên có Secure HttpOnly SameSite=Lax
+PASS: Khách chỉ thấy trang đăng nhập admin
+PASS: Khách giả mạo save_recipe tại admin bị 403
+PASS: Khách giả mạo delete_recipe tại admin bị 403
+PASS: Khách giả mạo add_category tại admin bị 403
+PASS: Khách giả mạo delete_comment tại admin bị 403
+PASS: Khách giả mạo logout tại admin bị 403
+PASS: Trang công khai chặn POST save_recipe 403
+PASS: Trang công khai chặn POST delete_recipe 403
+PASS: Trang công khai chặn POST add_category 403
+PASS: Trang công khai chặn POST action 403
+PASS: GET sửa công thức cũ bị 403
+PASS: Sai CSRF bình luận bị 403
+PASS: Đăng nhập sai hoặc không phải admin bị 401: admin
+PASS: Đăng nhập sai hoặc không phải admin bị 401: admin
+PASS: Đăng nhập sai hoặc không phải admin bị 401: admin' OR 1=1 --
+PASS: Đăng nhập sai hoặc không phải admin bị 401: daubep
+PASS: Admin đăng nhập bằng mật khẩu mạnh thành công và đổi session ID
+PASS: Admin thấy form tạo công thức và nút đăng xuất
+PASS: CSRF admin sai bị 403
+PASS: Admin action không tồn tại trả 400
+PASS: Admin thêm danh mục
+PASS: Admin kiểm tra trường bắt buộc
+PASS: Admin tạo công thức
+PASS: Món mới được chia sẻ công khai, gắn tác giả admin, HTML được escape
+PASS: Admin sửa công thức
+PASS: Trang người dùng thấy nội dung đã sửa
+PASS: Khách gửi bình luận thành công
+PASS: Bình luận được lưu DB, escape tên/nội dung chống HTML/XSS
+PASS: Tải lại trang không gửi thêm bình luận
+PASS: Khách không được xóa bình luận
+PASS: Bình luận rỗng bị 422
+PASS: Bình luận quá 2000 ký tự bị 422
+PASS: Admin xóa bình luận
+PASS: DB đã xóa bình luận
+PASS: Khách thêm bình luận thứ hai để kiểm tra cascade
+PASS: Admin xóa công thức
+PASS: Xóa công thức xóa kèm bình luận liên quan
+PASS: Công thức đã xóa trả 404
+PASS: Không bình luận được vào món không tồn tại
+PASS: Tìm kiếm gừng vẫn hoạt động
+PASS: Lọc danh mục Món canh vẫn hoạt động
+PASS: Admin đăng xuất
+PASS: Sau đăng xuất không thể dùng phiên cũ để sửa
+PASS: Dữ liệu mẫu giữ nguyên: 6 công thức, 6 danh mục
+PASS: Mật khẩu admin trong DB là hash
+
+TỔNG: 47 kiểm tra PASS. Dữ liệu kiểm tra tạm đã xóa.
+
+RÀ SOÁT ĐỀ 29 2026-10-25T00:05:48.096607+07:00
+
+Docker Compose: hợp lệ
+12 service đang chạy: cadvisor, grafana, loki, mysql, mysql-exporter, nginx, nginx-exporter, node-exporter, phpmyadmin, prometheus, promtail, recipe-app
+Chỉ container d29 đang chạy: OK
+MySQL, ứng dụng, Promtail không publish cổng host: OK
+Non-root: uid=33(www-data) gid=33(www-data) groups=33(www-data)
+Network frontend-net : d29-nginx, d29-recipe-app
+Network backend-net : d29-mysql, d29-mysql-exporter, d29-phpmyadmin, d29-recipe-app
+Network monitoring-net : d29-cadvisor, d29-grafana, d29-loki, d29-mysql-exporter, d29-nginx, d29-nginx-exporter, d29-node-exporter, d29-prometheus, d29-promtail
+
+Nginx: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+Promtool: Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+HTTPS 200, xác thực bằng CA lab: OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+HTTP chuyển 301 sang HTTPS: OK
+phpMyAdmin: HTTP 200
+
+SQL / quyền DB:
+Tables_in_recipe_db
+categories
+comments
+recipes
+users
+recipes
+6
+categories
+6
+comments
+0
+username	role
+admin	admin
+Grants for recipe_user@%
+GRANT USAGE ON *.* TO `recipe_user`@`%`
+GRANT SELECT, INSERT, UPDATE, DELETE ON `recipe_db`.* TO `recipe_user`@`%`
+Grants for report_user@%
+GRANT USAGE ON *.* TO `report_user`@`%`
+GRANT SELECT ON `recipe_db`.* TO `report_user`@`%`
+Grants for exporter_user@%
+GRANT SELECT, PROCESS, REPLICATION CLIENT ON *.* TO `exporter_user`@`%`
+recipe_user: thao tác vượt quyền bị ERROR 1142
+report_user: thao tác vượt quyền bị ERROR 1142
+
+Prometheus: cadvisor=UP, mysql=UP, nginx=UP, node-exporter=UP, prometheus=UP
+PromQL mysql_up => 1 series, ví dụ 1
+PromQL nginx_up => 1 series, ví dụ 1
+PromQL rate(nginx_http_requests_total[1m]) => 1 series, ví dụ 0.06666666666666665
+PromQL mysql_global_status_threads_connected => 1 series, ví dụ 2
+PromQL rate(mysql_global_status_queries[1m]) => 1 series, ví dụ 1.3777777777777775
+PromQL rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_project="d29"}[5m])*100 => 12 series, ví dụ 1.2622946025556778
+PromQL container_memory_usage_bytes{container_label_com_docker_compose_project="d29"} => 12 series, ví dụ 317255680
+Datasource Loki : OK
+Datasource Prometheus : OK
+Dashboard Đề 29 - Giám sát hệ thống : 7 panels
+Dashboard Đề 29 - Log tập trung : 3 panels
+Loki /ready: 200
+LogQL {container="d29-recipe-app"} => 5 dòng, limit 5, cửa sổ 24 giờ
+LogQL {container="d29-recipe-app"} |~ "GET|POST" => 5 dòng, limit 5, cửa sổ 24 giờ
+LogQL {container="d29-mysql"} => 5 dòng, limit 5, cửa sổ 24 giờ
+LogQL {container="d29-nginx"} |= "404" => 5 dòng, limit 5, cửa sổ 24 giờ
+
+Khởi tạo mới: 01-schema.sql và 02-users.sh đã chạy trên MySQL 8.0 tạm, không publish cổng; 4 bảng, 6 món, admin hash và quyền recipe_user đúng. Container tạm đã dừng/xóa.
+Nâng cấp volume cũ: chạy upgrade-admin-comments.sql hai lần, giữ nguyên dữ liệu, không tạo trùng admin.
+Báo cáo in do sinh viên tự làm, không đưa lên Git.
+6 mật khẩu mạnh khác nhau, lưu ở file local ignored; tài khoản GitHub giữ longphan632000, tên repo có MSSV theo yêu cầu.
+
+Quét source/config trước commit: không có mật khẩu/hash thật mới.
+.env và TAI_KHOAN_LOCAL.txt: quyền 600, Git ignore.
+MySQL khởi tạo trên tmpfs mới: 01-schema.sql và 02-users.sh thành công; 4 bảng, 6 món, admin tồn tại, quyền recipe_user đúng. Container kiểm tra đã dừng/xóa.
+Các file kiểm tra cũ lưu lịch sử trước khi đổi mật khẩu; mật khẩu lab cũ không còn xác thực được trong d29.

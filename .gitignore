@@ -1,4 +1,6 @@
 .env
+TAI_KHOAN_LOCAL.txt
+.env.*.bak
 *.log
 nginx/certs/*.key
 nginx/certs/*.crt

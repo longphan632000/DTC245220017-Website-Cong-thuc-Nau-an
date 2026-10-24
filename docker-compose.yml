@@ -22,6 +22,10 @@ services:
       dockerfile: Dockerfile
     container_name: d29-recipe-app
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     environment:
       DB_HOST: mysql
       DB_NAME: ${MYSQL_DATABASE}
@@ -38,15 +42,18 @@ services:
     image: mysql:8.0
     container_name: d29-mysql
     restart: unless-stopped
-    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Chay bash scripts/tao-mat-khau.sh truoc}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Chua tao mat khau MySQL}
+      REPORT_PASSWORD: ${REPORT_PASSWORD:?Chua tao mat khau tai khoan chi doc}
+      EXPORTER_PASSWORD: ${EXPORTER_PASSWORD:?Chua tao mat khau exporter}
+      WEB_ADMIN_PASSWORD_HASH: ${WEB_ADMIN_PASSWORD_HASH:?Chua tao hash mat khau admin}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./mysql/02-users.sh:/docker-entrypoint-initdb.d/02-users.sh:ro
     networks:
       - backend-net
     healthcheck:
@@ -89,7 +96,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Chua tao mat khau Grafana}
     container_name: d29-grafana
     restart: unless-stopped
     ports:
@@ -129,6 +136,8 @@ services:
     image: prom/mysqld-exporter:latest
     container_name: d29-mysql-exporter
     restart: unless-stopped
+    environment:
+      MYSQLD_EXPORTER_PASSWORD: ${EXPORTER_PASSWORD:?Chua tao mat khau exporter}
     ports:
       - "9104:9104"
     volumes:

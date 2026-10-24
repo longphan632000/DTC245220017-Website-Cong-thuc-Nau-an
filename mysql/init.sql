@@ -44,10 +44,6 @@ INSERT INTO users (username, fullname) VALUES
 ('daubep', 'Đầu bếp Bếp Nhà'),
 ('thanhvien', 'Thành viên chia sẻ');
 
--- Mật khẩu lab LongPhan được lưu bằng password_hash của PHP.
-INSERT INTO users (username, fullname, role, password_hash) VALUES
-('admin', 'Quản trị Bếp Nhà', 'admin', '$2y$10$9H9.e2dLUOotg/uU4Inv6eY762gl75u4g6Du3Fu18EEPnkxL23RRW');
-
 INSERT INTO categories (name, description) VALUES
 ('Bữa sáng', 'Món ăn đơn giản cho buổi sáng'),
 ('Món chính', 'Món mặn cho bữa cơm gia đình'),
@@ -64,15 +60,5 @@ INSERT INTO recipes (title, ingredients, instructions, category_id, user_id, coo
 ('Sữa chua trái cây', '2 hộp sữa chua\n1 quả chuối\n100 g dâu tây\n1 thìa mật ong', '1. Rửa và cắt nhỏ trái cây.\n2. Cho sữa chua vào bát, thêm trái cây.\n3. Rưới mật ong trước khi dùng.', 5, 1, 10, 2),
 ('Trà chanh bạc hà', '2 túi trà\n400 ml nước nóng\n1 quả chanh\n2 thìa mật ong\n5 lá bạc hà', '1. Ủ trà theo hướng dẫn rồi để nguội bớt.\n2. Khuấy mật ong vào trà ấm.\n3. Thêm nước chanh khi trà nguội.\n4. Rót vào ly với đá và bạc hà.', 6, 2, 15, 2);
 
--- Chương 6: thu hồi quyền ALL do image MySQL cấp tự động, rồi cấp lại 4 quyền dữ liệu.
-REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'recipe_user'@'%';
-GRANT SELECT, INSERT, UPDATE, DELETE ON recipe_db.* TO 'recipe_user'@'%';
-
-CREATE USER IF NOT EXISTS 'report_user'@'%' IDENTIFIED BY 'LongPhan';
-GRANT SELECT ON recipe_db.* TO 'report_user'@'%';
-FLUSH PRIVILEGES;
-
--- Tài khoản MySQL exporter theo mẫu, chỉ dùng để đọc metrics.
-CREATE USER IF NOT EXISTS 'exporter_user'@'%' IDENTIFIED BY 'LongPhan' WITH MAX_USER_CONNECTIONS 3;
-GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter_user'@'%';
-FLUSH PRIVILEGES;
+-- Tài khoản, mật khẩu và GRANT/REVOKE nằm trong 02-users.sh.
+-- Mật khẩu lấy từ .env của từng máy, không đặt mật khẩu cố định trong SQL public.

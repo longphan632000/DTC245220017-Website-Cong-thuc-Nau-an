@@ -21,7 +21,4 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
 );
 
--- Không thay đổi mật khẩu/quyền nếu username admin đã tồn tại.
-INSERT INTO users (username, fullname, role, password_hash) VALUES
-('admin', 'Quản trị Bếp Nhà', 'admin', '$2y$10$9H9.e2dLUOotg/uU4Inv6eY762gl75u4g6Du3Fu18EEPnkxL23RRW')
-ON DUPLICATE KEY UPDATE username=users.username;
+-- Sau bước nâng cấp schema, dùng 02-users.sh để đồng bộ tài khoản theo .env.
